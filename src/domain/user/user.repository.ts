@@ -1,7 +1,4 @@
-import { User } from "./user.model";
+import { BaseRepository } from '../base/base.repository';
+import { User } from './user.model';
 
-export abstract class UserRepository {
-	abstract findAll(q: string): Promise<User[]>;
-
-	abstract findById(id: string): Promise<User | null>;
-}
+export abstract class UserRepository extends BaseRepository<User> {}

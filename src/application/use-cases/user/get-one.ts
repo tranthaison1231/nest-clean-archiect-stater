@@ -3,10 +3,10 @@ import { User } from 'src/domain/user/user.model';
 import { UserRepository } from 'src/domain/user/user.repository';
 
 @Injectable()
-export class GetAllUseCase {
+export class GetOneUseCase {
 	constructor(private readonly userRepository: UserRepository) {}
 
-	execute(q: string): Promise<User[]> {
-		return this.userRepository.findAll(q);
+	execute(id: string): Promise<User | undefined> {
+		return this.userRepository.findById(id);
 	}
 }

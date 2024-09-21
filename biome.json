@@ -52,7 +52,7 @@
 	},
 	"formatter": {
 		"enabled": true,
-		"formatWithErrors": false,
+		"formatWithErrors": true,
 		"ignore": [],
 		"attributePosition": "auto",
 		"indentStyle": "tab",
@@ -65,6 +65,9 @@
 		"ignore": ["node_modules", "dist", "coverage"]
 	},
 	"javascript": {
+		"formatter": {
+			"quoteStyle": "single"
+		},
 		"parser": {
 			"unsafeParameterDecoratorsEnabled": true
 		}

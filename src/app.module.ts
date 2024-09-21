@@ -1,14 +1,14 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { CacheModule } from "@nestjs/cache-manager";
-import redisStore from "cache-manager-redis-store";
-import { RedisClientOptions } from "redis";
-import { StoreConfig } from "cache-manager";
-import { DatabaseModule } from "./infrastructure/database/database.module";
-import { UserController } from "./presentation/rest/user.controller";
-import { GetAllUseCase } from "./application/use-cases/user/get-all";
-import { extendedPrismaClient } from "./infrastructure/database/prisma";
-import { CustomPrismaModule } from "nestjs-prisma";
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CacheModule } from '@nestjs/cache-manager';
+import redisStore from 'cache-manager-redis-store';
+import { RedisClientOptions } from 'redis';
+import { StoreConfig } from 'cache-manager';
+import { DatabaseModule } from './infrastructure/database/database.module';
+import { UserController } from './presentation/rest/user.controller';
+import { extendedPrismaClient } from './infrastructure/database/prisma';
+import { CustomPrismaModule } from 'nestjs-prisma';
+import { UserUseCases } from './application/use-cases/user';
 
 @Module({
 	imports: [
@@ -20,13 +20,13 @@ import { CustomPrismaModule } from "nestjs-prisma";
 			useFactory: async (configService: ConfigService) =>
 				({
 					store: redisStore,
-					url: configService.get<string>("REDIS_URL"),
+					url: configService.get<string>('REDIS_URL'),
 				}) as StoreConfig,
 			isGlobal: true,
 		}),
 		CustomPrismaModule.forRootAsync({
 			isGlobal: true,
-			name: "PrismaService",
+			name: 'PrismaService',
 			useFactory: () => {
 				return extendedPrismaClient;
 			},
@@ -34,6 +34,6 @@ import { CustomPrismaModule } from "nestjs-prisma";
 		DatabaseModule,
 	],
 	controllers: [UserController],
-	providers: [GetAllUseCase],
+	providers: [...UserUseCases],
 })
 export class AppModule {}

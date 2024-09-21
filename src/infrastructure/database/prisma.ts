@@ -1,21 +1,21 @@
-import { PrismaClient } from "@prisma/client";
-import kyselyExtension from "prisma-extension-kysely";
-import type { DB } from "./kysely";
+import { PrismaClient } from '@prisma/client';
+import kyselyExtension from 'prisma-extension-kysely';
+import type { DB } from './kysely';
 import {
 	CamelCasePlugin,
 	Kysely,
 	PostgresAdapter,
 	PostgresIntrospector,
 	PostgresQueryCompiler,
-} from "kysely";
-import { formatQuery } from "prisma-query-formatter";
+} from 'kysely';
+import { formatQuery } from 'prisma-query-formatter';
 
 function configurePrisma() {
 	const prisma = new PrismaClient({
-		log: [{ emit: "event", level: "query" }],
+		log: [{ emit: 'event', level: 'query' }],
 	});
 
-	prisma.$on("query", (e) => {
+	prisma.$on('query', (e) => {
 		// biome-ignore lint/suspicious/noConsole: <explanation>
 		console.info(formatQuery(e.query, e.params, { escapeParams: true }));
 	});
@@ -38,7 +38,7 @@ function configurePrisma() {
 
 export type DbClient = ReturnType<typeof configurePrisma>;
 export type DbTransactionClient = Parameters<
-	Parameters<DbClient["$transaction"]>[0]
+	Parameters<DbClient['$transaction']>[0]
 >[0];
 
 export let extendedPrismaClient = configurePrisma();

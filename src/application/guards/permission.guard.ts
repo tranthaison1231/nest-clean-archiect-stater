@@ -1,8 +1,8 @@
-import { CanActivate, ExecutionContext, mixin, Type } from "@nestjs/common";
-import { User } from "@prisma/client";
+import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
+import { User } from '@prisma/client';
 
 export enum Permission {
-	ManagePermission = "manage-permission",
+	ManagePermission = 'manage-permission',
 }
 
 interface RequestWithUser extends Request {

@@ -3,7 +3,7 @@ import {
 	HttpStatus,
 	ValidationError,
 	ValidationPipeOptions,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
 export const validationOptions: ValidationPipeOptions = {
 	transform: true,
@@ -18,7 +18,7 @@ export const validationOptions: ValidationPipeOptions = {
 						...accumulator,
 						[currentValue.property]: Object.values(
 							currentValue.constraints ?? {},
-						).join(", "),
+						).join(', '),
 					}),
 					{},
 				),
