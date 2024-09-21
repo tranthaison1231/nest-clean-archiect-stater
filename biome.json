@@ -1,0 +1,72 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.8.2/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"all": true,
+			"style": {
+				"noNonNullAssertion": "off",
+				"useSelfClosingElements": "off",
+				"noUselessElse": "off",
+				"noUnusedTemplateLiteral": "off",
+				"useImportType": "off",
+				"noArguments": "off",
+				"noVar": "off",
+				"useSingleVarDeclarator": "off",
+				"noCommaOperator": "off",
+				"noParameterAssign": "off",
+				"useNamingConvention": "off",
+				"noParameterProperties": "off"
+			},
+			"performance": {
+				"noAccumulatingSpread": "off"
+			},
+			"a11y": {
+				"useKeyWithClickEvents": "off",
+				"noSvgWithoutTitle": "off"
+			},
+			"suspicious": {
+				"noExplicitAny": "off",
+				"noAssignInExpressions": "off"
+			},
+			"nursery": {
+				"useSortedClasses": "error"
+			},
+			"correctness": {
+				"noUnreachable": "off",
+				"noInnerDeclarations": "off",
+				"useHookAtTopLevel": "off",
+				"useImportExtensions": "off",
+				"noUndeclaredDependencies": "off"
+			},
+			"complexity": {
+				"noForEach": "off",
+				"noThisInStatic": "off",
+				"noStaticOnlyClass": "off",
+				"noBannedTypes": "off"
+			}
+		}
+	},
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": false,
+		"ignore": [],
+		"attributePosition": "auto",
+		"indentStyle": "tab",
+		"indentWidth": 2,
+		"lineWidth": 80,
+		"lineEnding": "lf"
+	},
+	"files": {
+		"include": ["src/**"],
+		"ignore": ["node_modules", "dist", "coverage"]
+	},
+	"javascript": {
+		"parser": {
+			"unsafeParameterDecoratorsEnabled": true
+		}
+	}
+}

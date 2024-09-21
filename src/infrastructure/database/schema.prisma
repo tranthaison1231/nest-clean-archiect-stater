@@ -1,0 +1,302 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["omitApi"]
+  output          = "../../../node_modules/.prisma/client"
+}
+
+generator kysely {
+  provider  = "prisma-kysely"
+  output    = "./"
+  fileName  = "kysely.ts"
+  camelCase = "true"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id               String     @id @default(cuid())
+  name             String     @unique
+  icon             String?
+  parentCategoryId String?
+  parentCategory   Category?  @relation("SubCategories", fields: [parentCategoryId], references: [id])
+  subCategories    Category[] @relation("SubCategories")
+  products         Product[]
+
+  @@map("categories")
+}
+
+model User {
+  id                    String          @id @default(cuid())
+  firstName             String?
+  lastName              String?
+  email                 String          @unique
+  age                   Int?
+  avatar                String?
+  phone                 String?
+  password              String
+  dob                   DateTime?
+  gender                String?
+  school                String?
+  background            String?
+  workAt                String?
+  address               String?
+  pageId                String?
+  comments              Comment[]
+  receiverFriendRequest FriendRequest[] @relation("receiverFriendRequest")
+  senderFriendRequest   FriendRequest[] @relation("senderFriendRequest")
+  users                 FriendShip[]    @relation("userFriendShip")
+  userOfs               FriendShip[]    @relation("userOfFriendShip")
+  joinedGroups          GroupsMembers[]
+  groupsRoles           RolesOnGroup[]
+  ownedGroups           Group[]
+  likes                 Like[]
+  posts                 Post[]
+  shortCuts             ShortCut[]
+  stories               Story[]
+  page                  Page?           @relation(fields: [pageId], references: [id])
+  userRoles             UserRole[]
+
+  @@map("users")
+}
+
+model Permission {
+  id              String           @id @default(cuid())
+  name            String           @unique
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model Role {
+  id              String           @id @default(cuid())
+  name            String           @unique
+  rolePermissions RolePermission[]
+  userRoles       UserRole[]
+
+  @@map("roles")
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model UserRole {
+  userId String
+  roleId String
+  user   User   @relation(fields: [userId], references: [id])
+  role   Role   @relation(fields: [roleId], references: [id])
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model ShortCut {
+  id      String @id @default(cuid())
+  groupId String
+  userId  String
+  group   Group  @relation(fields: [groupId], references: [id])
+  user    User   @relation(fields: [userId], references: [id])
+
+  @@map("short_cuts")
+}
+
+model FriendRequest {
+  id         String       @id @default(cuid())
+  senderId   String
+  receiverId String
+  status     FriendStatus
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  receiver   User         @relation("receiverFriendRequest", fields: [receiverId], references: [id])
+  sender     User         @relation("senderFriendRequest", fields: [senderId], references: [id])
+
+  @@map("friend_requests")
+}
+
+model FriendShip {
+  id          String   @id @default(cuid())
+  userId      String
+  userOfId    String
+  friendSince DateTime @default(now())
+  user        User     @relation("userFriendShip", fields: [userId], references: [id])
+  userOf      User     @relation("userOfFriendShip", fields: [userOfId], references: [id])
+
+  @@map("friend_ship")
+}
+
+model Story {
+  id        String   @id @default(cuid())
+  userId    String?
+  content   String?
+  media     String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("stories")
+}
+
+model Page {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  avatar      String?
+  cover       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  posts       Post[]
+  followers   User[]
+
+  @@map("pages")
+}
+
+model Post {
+  id          String      @id @default(cuid())
+  userId      String?
+  content     String?
+  location    String?
+  media       Json?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  publishType PublishType @default(PUBLIC)
+  isDeleted   Boolean     @default(false)
+  pageId      String?
+  comments    Comment[]
+  likes       Like[]
+  page        Page?       @relation(fields: [pageId], references: [id])
+  user        User?       @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("posts")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  media     Json?
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, postId])
+  @@map("comments")
+}
+
+model Like {
+  id     String     @id @default(cuid())
+  userId String
+  postId String
+  type   TypeOfLike
+  post   Post       @relation(fields: [postId], references: [id])
+  user   User       @relation(fields: [userId], references: [id])
+
+  @@index([userId, postId])
+  @@map("likes")
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  categoryId  String
+  name        String?
+  price       Int?
+  description String?
+  location    String?
+  images      Json?
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@map("products")
+}
+
+model Group {
+  id            String          @id @default(cuid())
+  name          String          @unique
+  ownerId       String
+  type          TypeOfGroup
+  background    String?
+  avatar        String?
+  createdAt     DateTime        @default(now())
+  userId        String?
+  members       GroupsMembers[]
+  rolesOnGroups RolesOnGroup[]
+  owner         User            @relation(fields: [ownerId], references: [id])
+  shortCuts     ShortCut[]
+
+  @@index([ownerId])
+  @@map("groups")
+}
+
+model RolesOnGroup {
+  userId  String
+  groupId String
+  role    RoleOnGroup
+  group   Group       @relation(fields: [groupId], references: [id])
+  user    User        @relation(fields: [userId], references: [id])
+
+  @@id([userId, groupId])
+  @@map("group_roles")
+}
+
+model GroupsMembers {
+  memberId String
+  groupId  String
+  group    Group  @relation(fields: [groupId], references: [id])
+  member   User   @relation(fields: [memberId], references: [id])
+
+  @@id([memberId, groupId])
+  @@index([groupId, memberId])
+  @@map("group_members")
+}
+
+enum FriendStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum PublishType {
+  PUBLIC
+  FRIENDS
+  FRIENDS_EXCEPT
+  ONLY_ME
+  SPECIFIC_FRIENDS
+  CUSTOM
+}
+
+enum RoleOnGroup {
+  ADMIN
+  MOD
+  MEMBER
+}
+
+enum TypeOfGroup {
+  PUBLIC
+  PRIVATE
+}
+
+enum TypeOfLike {
+  LIKE
+  LOVE
+  CARE
+  HAHA
+  WOW
+  SAD
+  ANGRY
+}

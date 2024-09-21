@@ -1,0 +1,4 @@
+npx lint-staged --concurrent false
+bun run lint
+bun run check-types
+
