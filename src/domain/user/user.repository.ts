@@ -1,4 +1,4 @@
 import { BaseRepository } from '../base/base.repository';
-import { User } from './user.model';
+import { User } from './user.entity';
 
 export abstract class UserRepository extends BaseRepository<User> {}
